@@ -3,6 +3,7 @@ import generateToken from "../utilits/generateToken.js";
 
 
 export const register=async(req,res)=>{
+   try {
     const {name,email,password,address,phone}=req.body;
     const userExists =await Users.findOne({email})
     if (userExists) {
@@ -29,10 +30,14 @@ export const register=async(req,res)=>{
         res.status(401).json({message:'Invalid User Data'});
     }
 }
+   } catch (error) {
+    res.status(500).json({error:error.message})
+   }
 }
 
 export const login=async(req,res)=>{
-    const {email,password}=req.body;
+    try {
+        const {email,password}=req.body;
 
     const user=await Users.findOne({email});
     if (user && password==user.password) {
@@ -52,13 +57,18 @@ export const login=async(req,res)=>{
     else{
         res.status(404).json({message:'invalid email or password'});
     }
+    } catch (error) {
+    res.status(500).json({error:error.message})
+        
+    }
 }
 
 
 
 
 export const getUserprofile=async(req,res)=>{
-    const {id,token}=req.body;
+    try {
+        const {id,token}=req.body;
     const user=await Users.findById(id);
     if (user) {
         res.status(200).json({
@@ -77,4 +87,8 @@ export const getUserprofile=async(req,res)=>{
         res.status(404).json({message:'invalid data'});
     }
 
+    } catch (error) {
+    res.status(500).json({error:error.message})
+        
+    }
 }
